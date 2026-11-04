@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ドパがきにしか 管理画面</title>
+<meta name="robots" content="noindex">
+<style>
+body{margin:0;background:#f3f3f3;color:#1d1d1d;font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:20px}
+.box{background:#fff;border:2px solid #1d1d1d;border-radius:12px;padding:12px;margin:12px 0;font-size:13px;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+td{padding:5px 4px;border-bottom:1px solid #ddd;vertical-align:middle}
+tr.hid{opacity:.4}
+tr.bad td{background:#ffd9d9}
+button{border:none;border-radius:8px;padding:6px 10px;font-weight:bold;font-family:inherit;cursor:pointer}
+.hide{background:#d0342c;color:#fff}.show{background:#888;color:#fff}.tab{background:#ddd}.tab.on{background:#1d1d1d;color:#fff}
+code{font-size:11px;word-break:break-all;-webkit-user-select:all;user-select:all}
+.msg{color:#d23}
+</style>
+<script src="physics.js"></script>
+</head>
+<body><main>
+<h1>ドパがきにしかできないゲーム 管理画面</h1>
+<div class="box">
+ 穴の神隠しの管理画面と同じブラウザで開くと、そのまま「隠す」が使えます（同じ管理用IDを使います）。<br>
+ この画面の管理用ID：<code id="uid">読みこみ中…</code><br>
+ ・<b>隠す</b>：ランキングに出なくなります（あとで戻せます）。<br>
+ ・<b>完全に消す</b>：IDを furoya-no-onna の <b>dpc-remove.txt</b> に1行ずつ書いて GitHub に上げると、自動で消えます。<br>
+ ・計算が合わない記録（赤い行）は、10分ごとの自動確認で消えます。<br>
+ ・「時間差」は、投げてから記録が届くまでの秒数です。遊んですぐ送られるので、ふつうは数秒です。
+</div>
+<p><button class="tab on" data-b="sp">スマホ</button> <button class="tab" data-b="pc">パソコン</button> <button id="reload">読みなおす</button></p>
+<p class="msg" id="msg"></p>
+<div id="list">読みこみ中…</div>
+</main>
+<script>
+const FB={apiKey:'AIzaSyCMwGPHPKsDByV07QPq56-PGXTDxcYVNfc',databaseURL:'https://furoya-no-onna-default-rtdb.asia-southeast1.firebasedatabase.app'};
+const DBU=FB.databaseURL;
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k))}catch(_){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
+async function auth(){let a=lsGet('furo_admin_auth');if(a&&a.exp>Date.now()+60000)return a;
+ if(a&&a.refresh){try{const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.refresh)});
+  if(r.ok){const j=await r.json();a={uid:j.user_id,token:j.id_token,refresh:j.refresh_token,exp:Date.now()+(+j.expires_in)*1000};lsSet('furo_admin_auth',a);return a}}catch(_){}}
+ const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({returnSecureToken:true})});
+ if(!r.ok)throw new Error('ログインできませんでした');const j=await r.json();a={uid:j.localId,token:j.idToken,refresh:j.refreshToken,exp:Date.now()+(+j.expiresIn)*1000};lsSet('furo_admin_auth',a);return a}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtT=q=>q<1e5?(q/1e5).toFixed(5):(q/1e5).toFixed(2);
+let board='sp';
+async function load(){
+ const L=document.getElementById('list');L.textContent='読みこみ中…';
+ try{
+  const [sc,hd]=await Promise.all([fetch(DBU+'/dpc/'+board+'/scores.json').then(r=>r.json()),fetch(DBU+'/dpc/hidden.json').then(r=>r.json())]);
+  const rows=Object.entries(sc||{}).map(([id,v])=>({...v,id})).sort((a,b)=>a.q-b.q||b.k-a.k);
+  if(!rows.length){L.textContent='まだ記録がありません';return}
+  L.innerHTML='<table>'+rows.map((r,i)=>{const h=hd&&hd[r.id],ok=DPC.check(r);
+   return '<tr class="'+(h?'hid ':'')+(ok?'':'bad')+'"><td>'+(i+1)+'</td><td>'+esc(r.n)+'</td><td>'+fmtT(r.q)+'秒</td><td>'+r.k+'点</td><td>'+(r.a===1?'空中':'落下')+'</td><td>力'+r.p+'</td><td>時間差 '+(((r.t-r.st)/1000).toFixed(1))+'秒</td><td>'+new Date(r.t).toLocaleString('ja-JP')+'</td><td><code>'+r.id+'</code></td><td>'+(h?'<button class="show" data-u="'+r.id+'" data-h="0">戻す</button>':'<button class="hide" data-u="'+r.id+'" data-h="1">隠す</button>')+'</td></tr>'}).join('')+'</table>';
+ }catch(e){L.textContent='読みこめませんでした'}
+}
+document.addEventListener('click',async e=>{
+ const tb=e.target.closest('.tab');if(tb){board=tb.dataset.b;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===tb));load();return}
+ const b=e.target.closest('button[data-u]');if(!b)return;
+ try{const a=await auth();const u=b.dataset.u;
+  const r=await fetch(DBU+'/dpc/hidden/'+u+'.json?auth='+encodeURIComponent(a.token),{method:b.dataset.h==='1'?'PUT':'DELETE',body:b.dataset.h==='1'?'true':undefined});
+  if(!r.ok)throw new Error('変更できませんでした（furo_admin/uid にこの画面の管理用IDが入っているか確認）');load()}catch(err){document.getElementById('msg').textContent=err.message}
+});
+document.getElementById('reload').onclick=load;
+auth().then(a=>document.getElementById('uid').textContent=a.uid).catch(e=>document.getElementById('uid').textContent=e.message);
+load();
+</script>
+</body>
+</html>
