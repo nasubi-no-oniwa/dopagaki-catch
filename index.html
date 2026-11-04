@@ -315,13 +315,7 @@ const tiles=new THREE.InstancedMesh(new THREE.BoxGeometry(.94,.06,.94),new THREE
 {const m=new THREE.Matrix4();let i=0;for(let x=0;x<TXN;x++)for(let z=0;z<TZN;z++){m.makeTranslation(x-(TXN-1)/2,-.02,z-7.2);tiles.setMatrixAt(i,m);tiles.setColorAt(i,new THREE.Color(0x333333));i++;}}
 party.add(tiles);
 const wall=new THREE.Mesh(new THREE.PlaneGeometry(40,14),new THREE.MeshBasicMaterial({color:0x1e0a14}));wall.position.set(0,5,-8);party.add(wall);
-function neonTex(){const c=document.createElement('canvas');c.width=1024;c.height=256;const g=c.getContext('2d');
- g.font='900 160px "Arial Black",Impact,sans-serif';g.textAlign='center';g.textBaseline='middle';
- g.shadowColor='#ff3d8b';g.shadowBlur=40;g.strokeStyle='#ff7ab0';g.lineWidth=8;g.strokeText('DOPA!!',512,135);
- g.shadowColor='#ffe23d';g.shadowBlur=25;g.fillStyle='#fff4c0';g.fillText('DOPA!!',512,135);
- const tx=new THREE.CanvasTexture(c);tx.colorSpace=THREE.SRGBColorSpace;return tx;}
-const sign=new THREE.Mesh(new THREE.PlaneGeometry(6,1.5),new THREE.MeshBasicMaterial({map:neonTex(),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-sign.position.set(0,4.1,-7.9);party.add(sign);
+
 const mball=new THREE.Mesh(new THREE.IcosahedronGeometry(.45,2),new THREE.MeshStandardMaterial({color:0xdddddd,metalness:.35,roughness:.15,flatShading:true,emissive:0x222222}));mball.position.set(0,5.3,-3);party.add(mball);
 const beams=[];
 for(let i=0;i<5;i++){const piv=new THREE.Group();piv.position.set(-4+i*2,7,-4);party.add(piv);
@@ -439,7 +433,7 @@ function setScene(s,dt){
   tiles.instanceColor.needsUpdate=true;
   beams.forEach(bm=>{bm.piv.rotation.z=Math.sin(T*.9+bm.ph)*.55;bm.piv.rotation.x=Math.cos(T*.7+bm.ph)*.3;bm.mat.opacity=(.1+pulse*.12)*pl;});
   lasers.forEach(l=>{l.piv.rotation.y=l.side*(.35+Math.sin(T*1.6+l.ph)*.3);l.piv.rotation.x=-.05+Math.sin(T*1.1+l.ph*2)*.12;l.mat.opacity=(.35+pulse*.5)*pl;});
-  mball.rotation.y=T*.8;sign.material.opacity=pl*(.75+pulse*.25);sign.scale.setScalar(1+pulse*.04);
+  mball.rotation.y=T*.8;
   wall.material.color.setHex(0x1e0a14);
  }
 }
@@ -517,7 +511,7 @@ function caught(r){
  const big=r.k>=90;
  (r.a===1?SFX.catchAir:SFX.catchFall)();setTimeout(()=>SFX.party(big),r.a===1?250:60);
  $('flash').classList.remove('on');void $('flash').offsetWidth;$('flash').classList.add('on');
- setTimeout(()=>{confetti(big?220:140);judgeShow(evName(r.k),(r.a===1?t('air'):t('fall'))+' '+fmtT(r.q)+t('sec'),r.k>=100?'#ffcc33':'');},r.a===1?300:80);
+ setTimeout(()=>confetti(big?220:140),r.a===1?300:80);
  L.doneAt=performance.now();
  submit(r);
  setTimeout(()=>showResult(),2300);

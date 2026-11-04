@@ -3,7 +3,7 @@ const NS='furoya-no-onna-default-rtdb',PROJ='furoya-no-onna',BASE='http://127.0.
 const DPC=(await import('../physics.js')).default;
 const b64=o=>Buffer.from(JSON.stringify(o)).toString('base64url');
 const tok=uid=>b64({alg:'none',typ:'JWT'})+'.'+b64({uid,sub:uid,user_id:uid,iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+3600,aud:PROJ,iss:'https://securetoken.google.com/'+PROJ,provider_id:'anonymous',firebase:{sign_in_provider:'anonymous'}})+'.';
-async function req(method,path,uid,body){const r=await fetch(BASE+'/'+path+'.json?ns='+NS,{method,headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+tok(uid)}:{})},body:body===undefined?undefined:JSON.stringify(body)});return {ok:r.ok,status:r.status,j:await r.json().catch(()=>null)};}
+async function req(method,path,uid,body){const r=await fetch(BASE+'/'+path+'.json?ns='+NS+(uid?'&auth='+tok(uid):''),{method,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {ok:r.ok,status:r.status,j:await r.json().catch(()=>null)};}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let fail=0;const ex=(name,res,want)=>{const ok=res.ok===want;console.log((ok?'OK  ':'NG  ')+name+' → '+res.status);if(!ok){fail++;console.log(JSON.stringify(res.j));}};
 const TS={'.sv':'timestamp'};
@@ -12,6 +12,7 @@ function rec(a,p,eu,x,y){const j=a===1?DPC.air(p,eu,x,y):DPC.fall(p,eu);if(!j)th
 const U='user1aaaaaaaaaaaaaaaaaaa',U2='user2bbbbbbbbbbbbbbbbbbb';
 // 空中：力250で0.05秒後にボールの中心
 const v=DPC.vel(250),e=.05,y=Math.round(DPC.yAt(v,e)*1e4),eu=50000;
+ex('ログインなしで 投げます を書く',await req('PUT','dpc/throws/'+U,null,{t:TS}),false);
 let t1=await ticket(U);ex('投げます を書く',t1.r,true);
 ex('1秒以内にもう一度 投げます',(await ticket(U)).r,false);
 await sleep(120);
