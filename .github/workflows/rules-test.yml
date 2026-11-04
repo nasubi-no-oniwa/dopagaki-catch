@@ -23,7 +23,7 @@ jobs:
       - name: いまのルールを取ってくる
         run: |
           curl -fsSL https://raw.githubusercontent.com/nasubi-no-oniwa/furoya-no-onna/main/database.rules.json -o "$RUNNER_TEMP/database.rules.json"
-          printf '{"database":{"rules":"%s"},"emulators":{"database":{"port":9000}}}' "$RUNNER_TEMP/database.rules.json" > "$RUNNER_TEMP/firebase.json"
+          printf '{"database":{"rules":"database.rules.json"},"emulators":{"database":{"port":9000}}}' > "$RUNNER_TEMP/firebase.json"
           cp test/rules-test.mjs physics.js "$RUNNER_TEMP/" && mkdir -p "$RUNNER_TEMP/test" && mv "$RUNNER_TEMP/rules-test.mjs" "$RUNNER_TEMP/test/"
       - name: 試す
         working-directory: ${{ runner.temp }}

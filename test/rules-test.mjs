@@ -1,8 +1,8 @@
 // ランキングのルールの試験（GitHub の上で Firebase の試し用データベースを立てて試す。本番のデータには触らない）
-const NS='furoya-no-onna',BASE='http://127.0.0.1:9000';
+const NS='furoya-no-onna-default-rtdb',PROJ='furoya-no-onna',BASE='http://127.0.0.1:9000';
 const DPC=(await import('../physics.js')).default;
 const b64=o=>Buffer.from(JSON.stringify(o)).toString('base64url');
-const tok=uid=>b64({alg:'none',typ:'JWT'})+'.'+b64({uid,sub:uid,user_id:uid,iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+3600,aud:NS,iss:'https://securetoken.google.com/'+NS,provider_id:'anonymous',firebase:{sign_in_provider:'anonymous'}})+'.';
+const tok=uid=>b64({alg:'none',typ:'JWT'})+'.'+b64({uid,sub:uid,user_id:uid,iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+3600,aud:PROJ,iss:'https://securetoken.google.com/'+PROJ,provider_id:'anonymous',firebase:{sign_in_provider:'anonymous'}})+'.';
 async function req(method,path,uid,body){const r=await fetch(BASE+'/'+path+'.json?ns='+NS,{method,headers:{'Content-Type':'application/json',...(uid?{Authorization:'Bearer '+tok(uid)}:{})},body:body===undefined?undefined:JSON.stringify(body)});return {ok:r.ok,status:r.status,j:await r.json().catch(()=>null)};}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let fail=0;const ex=(name,res,want)=>{const ok=res.ok===want;console.log((ok?'OK  ':'NG  ')+name+' → '+res.status);if(!ok){fail++;console.log(JSON.stringify(res.j));}};
