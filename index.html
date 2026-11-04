@@ -665,9 +665,11 @@ $('sendBtn').onclick=async()=>{
  ls.set('dpc_name',n);$('sendBtn').disabled=true;await doSend(n);$('sendBtn').disabled=false;
 };
 $('nameIn').addEventListener('change',()=>{const n=$('nameIn').value.trim();if(n&&badName(n)){$('nameIn').value='';return;}ls.set('dpc_name',n);});
+// 怪しい記録：0.02秒より速いのに50投目より前（自動確認でも消す）
+const suspicious=r=>r.q<2000&&!(r.c>=50);
 async function loadBoard(board){
  const [d,h]=await Promise.all([fetch(DB(board+'/scores.json?orderBy=%22q%22&limitToFirst=300')).then(r=>{if(!r.ok)throw 0;return r.json()}),fetch(DB('hidden.json')).then(r=>r.ok?r.json():null).catch(()=>null)]);
- return Object.entries(d||{}).map(([id,v])=>({...v,id})).filter(r=>!(h&&h[r.id])&&DPC.check(r)).sort((a,b)=>a.q-b.q||b.k-a.k||a.t-b.t);
+ return Object.entries(d||{}).map(([id,v])=>({...v,id})).filter(r=>!(h&&h[r.id])&&DPC.check(r)&&!suspicious(r)).sort((a,b)=>a.q-b.q||b.k-a.k||a.t-b.t);
 }
 async function myRank(board,uid){try{const rows=await loadBoard(board);const i=rows.findIndex(r=>r.id===uid);return i>=0?i+1:null;}catch(e){return null;}}
 let rankFrom=false,rankRows=[],curBoard='sp';
