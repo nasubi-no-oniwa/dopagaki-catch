@@ -19,14 +19,14 @@ function air(p,eu,x,y){
  const by=yAt(v,e);if(by<P.YMIN)return null;          // まだ手から離れていない
  const d=Math.hypot(X,Y-by);if(d>P.R)return null;      // ボールの外
  const T=passTime(v,Math.max(Y,P.YMIN));if(T==null)return null;
- const k=Math.max(1,Math.round(100*(1-d/P.R)));
+ const k=Math.max(50,Math.round(50+50*(1-d/P.R)));   // 取れたら必ず50点以上（ふち50点・真ん中100点）
  return {T,q:quant(T),k};
 }
 // 落ちてきたところのキャッチ：手に届く瞬間の前後0.25秒
 function fall(p,eu){
  const v=vel(p),e=eu/1e6,L=landTime(v),dt=Math.abs(e-L);
  if(dt>P.WIN)return null;
- const k=Math.max(1,Math.round(100*(1-dt/P.WIN)));
+ const k=Math.max(50,Math.round(50+50*(1-dt/P.WIN))); // 取れたら必ず50点以上（はし50点・ちょうど100点）
  return {T:e,q:quant(e),k};
 }
 // 記録をまるごと確かめる（a=1 空中 / a=0 落下）

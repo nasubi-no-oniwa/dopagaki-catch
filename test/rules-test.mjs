@@ -20,6 +20,7 @@ const r1={...rec(1,250,eu,0,y),st:t1.st};
 ex('ほかの人の場所に書く',await req('PUT','dpc/sp/scores/'+U2,U,r1),false);
 ex('ちがう投げの時刻で送る',await req('PUT','dpc/sp/scores/'+U,U,{...r1,st:t1.st-5}),false);
 ex('数字のつじつまが合わない（q を小さく）',await req('PUT','dpc/sp/scores/'+U,U,{...r1,q:r1.q-5000}),false);
+ex('50点より低い点数',await req('PUT','dpc/sp/scores/'+U,U,{...r1,k:30}),false);
 ex('ありえない速さ（q=500）',await req('PUT','dpc/sp/scores/'+U,U,{...r1,q:500,eu:5000}),false);
 ex('正しい空中キャッチ',await req('PUT','dpc/sp/scores/'+U,U,r1),true);
 ex('同じ投げでもう一度送る',await req('PUT','dpc/sp/scores/'+U,U,{...r1,k:r1.k}),false);
