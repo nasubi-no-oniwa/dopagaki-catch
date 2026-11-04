@@ -12,9 +12,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>ドパがきにしかできないゲーム</title>
-<meta name="description" content="投げたボールを、画面から消える前にタップ。0.00001秒を争う。">
+<meta name="description" content="ボールを投げて、キャッチするだけ。0.00001秒を争う。">
 <meta property="og:title" content="ドパがきにしかできないゲーム">
-<meta property="og:description" content="投げたボールを、画面から消える前にタップ。0.00001秒を争う。">
+<meta property="og:description" content="ボールを投げて、キャッチするだけ。0.00001秒を争う。">
 <meta property="og:image" content="https://nasubi-no-oniwa.github.io/dopagaki-catch/ogp.png">
 <meta property="og:url" content="https://nasubi-no-oniwa.github.io/dopagaki-catch/">
 <meta name="twitter:card" content="summary_large_image">
@@ -173,7 +173,7 @@ const GAME_URL='https://nasubi-no-oniwa.github.io/dopagaki-catch/';
 // ===== ことば（日本語・英語・繁体中文・韓国語） =====
 const TX={
 ja:{title:'ドパがきにしか<br><em>できない</em>ゲーム',hud:'ドパがきにしかできないゲーム',
- how:'長押しで力をためて、離すとボールを真上に投げます。<br><b>投げた直後</b>、画面から消える前のボールをタップすると<b>空中キャッチ</b>。<br>逃したら、落ちてくるボールを「ポーン」に合わせてタップ。<br>早く取るほど上。ボールの真ん中・ちょうどほど高得点。',
+ how:'長押しで力をためて、離すとボールを真上に投げます。<br>落ちてくるボールを「ポーン」に合わせてタップ。<br>早く取るほど上。ちょうどのタイミングほど高得点。',
  name:'なまえ（12文字まで）',start:'はじめる',rank:'ランキング',lat:'音のずれ調整',best:'自己ベスト',none:'まだなし',
  hold:'長押しで力をためる',release:'離して投げる！',power:'力',tapAir:'いまだ！タップ！',waitFall:'「ポーン」でタップ',
  air:'空中キャッチ',fall:'落下キャッチ',drop:'落球',dropSub:'記録なし',early:'はやすぎ',late:'おそすぎ',
@@ -188,7 +188,7 @@ ja:{title:'ドパがきにしか<br><em>できない</em>ゲーム',hud:'ドパ�
  shareHint:'保存した動画を、Xの投稿に貼ってね',vfail:'この端末では動画をつくれませんでした',vmade:'できました',
  post:'{type} {time}秒／{k}点「{ev}」',tags:'#ドパゲー #ドパがきにしかできないゲーム',pcNote:'パソコンの記録はパソコンのランキングに入ります',nth:'{c}投目'},
 en:{title:'A Game Only<br><em>Dopamine Kids</em> Can Play',hud:'A Game Only Dopamine Kids Can Play',
- how:'Hold to charge, release to throw the ball straight up.<br>Tap the ball <b>right after the throw</b>, before it leaves the screen: <b>Air Catch</b>.<br>Missed it? Tap on the "ding" as it falls back.<br>Faster is better. Hit the center / exact timing for more points.',
+ how:'Hold to charge, release to throw the ball straight up.<br>Tap on the "ding" to catch it as it falls back.<br>Faster is better. The more exact your timing, the more points.',
  name:'Name (up to 12)',start:'Start',rank:'Ranking',lat:'Sound delay',best:'Best',none:'none yet',
  hold:'Hold to charge',release:'Release to throw!',power:'PWR',tapAir:'NOW! TAP!',waitFall:'Tap on the "ding"',
  air:'Air Catch',fall:'Falling Catch',drop:'Dropped',dropSub:'no record',early:'too early',late:'too late',
@@ -203,7 +203,7 @@ en:{title:'A Game Only<br><em>Dopamine Kids</em> Can Play',hud:'A Game Only Dopa
  shareHint:'Attach the saved video to your post on X',vfail:'This device can’t make videos',vmade:'Done',
  post:'{type} {time}s / {k}pts "{ev}"',tags:'#ドパゲー #ドパがきにしかできないゲーム',pcNote:'PC records go to the PC ranking',nth:'throw #{c}'},
 zh:{title:'只有<em>多巴胺小孩</em><br>才玩得了的遊戲',hud:'只有多巴胺小孩才玩得了的遊戲',
- how:'長按蓄力，放開就把球往正上方丟。<br>在<b>剛丟出</b>、球飛出畫面前點它，就是<b>空中接球</b>。<br>錯過的話，配合「叮」點擊落下的球。<br>越快越好。點越中心、時機越準分數越高。',
+ how:'長按蓄力，放開就把球往正上方丟。<br>配合「叮」點擊，接住落下的球。<br>越快越好。時機越準分數越高。',
  name:'名字（12字以內）',start:'開始',rank:'排行榜',lat:'聲音延遲調整',best:'個人最佳',none:'尚無',
  hold:'長按蓄力',release:'放開丟球！',power:'力',tapAir:'就是現在！點！',waitFall:'聽到「叮」就點',
  air:'空中接球',fall:'落下接球',drop:'掉球',dropSub:'無紀錄',early:'太早',late:'太晚',
@@ -218,7 +218,7 @@ zh:{title:'只有<em>多巴胺小孩</em><br>才玩得了的遊戲',hud:'只有�
  shareHint:'把儲存的影片貼到X的貼文裡',vfail:'這台裝置無法製作影片',vmade:'完成',
  post:'{type} {time}秒／{k}分「{ev}」',tags:'#ドパゲー #ドパがきにしかできないゲーム',pcNote:'電腦的紀錄會進電腦排行榜',nth:'第{c}投'},
 ko:{title:'<em>도파민 키즈</em>만<br>할 수 있는 게임',hud:'도파민 키즈만 할 수 있는 게임',
- how:'길게 눌러 힘을 모으고, 떼면 공을 위로 던집니다.<br><b>던진 직후</b> 화면에서 사라지기 전에 공을 탭하면 <b>공중 캐치</b>.<br>놓쳤다면 떨어지는 공을 "띵"에 맞춰 탭.<br>빠를수록 상위. 공 한가운데·정확한 타이밍일수록 고득점.',
+ how:'길게 눌러 힘을 모으고, 떼면 공을 위로 던집니다.<br>떨어지는 공을 "띵"에 맞춰 탭.<br>빠를수록 상위. 타이밍이 정확할수록 고득점.',
  name:'이름 (12자까지)',start:'시작',rank:'랭킹',lat:'소리 지연 조정',best:'최고 기록',none:'아직 없음',
  hold:'길게 눌러 힘 모으기',release:'떼서 던지기!',power:'힘',tapAir:'지금! 탭!',waitFall:'"띵"에 탭',
  air:'공중 캐치',fall:'낙하 캐치',drop:'낙구',dropSub:'기록 없음',early:'너무 빠름',late:'너무 늦음',
@@ -495,9 +495,9 @@ pad.addEventListener('pointerdown',e=>{
   const eu=Math.max(1,Math.round((seenAt(ts)-L.relTs)*1000)); // 押したときに画面に映っていたボールの時刻（100万分の1秒）
   const x=Math.round(w.x*1e4),y=Math.round(w.y*1e4);
   const j=DPC.air(L.p,eu,x,y);
-  L.tap={x:x/1e4,y:y/1e4,ok:!!j,e:Math.max(0,rawE)};
+  if(j)L.tap={x:x/1e4,y:y/1e4,ok:true,e:Math.max(0,rawE)};
   if(j){L.dev=e.pointerType==='mouse'?1:0;caught({a:1,eu,x,y,...j});}
-  else{SFX.miss();guide(t('waitFall'));}
+  // 外れたら何も起きない（空中で取れることを気づかせない）
   return;
  }
  // 落ちてくるボール：音に合わせる（押した時刻そのままで判定）
@@ -511,7 +511,7 @@ function upOrCancel(e,cancel){
  if(e.pointerId!==active)return;active=null;
  if(mode==='charge'){
   if(cancel){mode='ready';$('gauge').hidden=true;guide(t('hold'));return;}
-  const ts=evTs(e);L.p=powerAt(ts);L.relTs=ts;L.tt=0;mode='rise';$('gauge').hidden=true;guide(t('tapAir'));
+  const ts=evTs(e);L.p=powerAt(ts);L.relTs=ts;L.tt=0;mode='rise';$('gauge').hidden=true;guide(t('waitFall'));
   SFX.whoosh();scheduleTicks(ts+landTime(vel(L.p))*1000);
  }
 }
