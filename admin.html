@@ -55,7 +55,7 @@ async function load(){
   const rows=Object.entries(sc||{}).map(([id,v])=>({...v,id})).sort((a,b)=>a.q-b.q||b.k-a.k);
   if(!rows.length){L.textContent='まだ記録がありません';return}
   L.innerHTML='<table>'+rows.map((r,i)=>{const h=hd&&hd[r.id],ok=DPC.check(r);
-   return '<tr class="'+(h?'hid ':'')+(ok?'':'bad')+'"><td>'+(i+1)+'</td><td>'+esc(r.n)+'</td><td>'+fmtT(r.q)+'秒</td><td>'+r.k+'点</td><td>'+(r.a===1?'空中':'落下')+'</td><td>力'+r.p+'</td><td>時間差 '+(((r.t-r.st)/1000).toFixed(1))+'秒</td><td>'+new Date(r.t).toLocaleString('ja-JP')+'</td><td><code>'+r.id+'</code></td><td>'+(h?'<button class="show" data-u="'+r.id+'" data-h="0">戻す</button>':'<button class="hide" data-u="'+r.id+'" data-h="1">隠す</button>')+'</td></tr>'}).join('')+'</table>';
+   return '<tr class="'+(h?'hid ':'')+(ok?'':'bad')+'"><td>'+(i+1)+'</td><td>'+esc(r.n)+'</td><td>'+fmtT(r.q)+'秒</td><td>'+r.k+'点</td><td>'+(r.a===1?'空中':'落下')+'</td><td>'+(r.c?r.c+'投目':'—')+'</td><td>力'+r.p+'</td><td>時間差 '+(((r.t-r.st)/1000).toFixed(1))+'秒</td><td>'+new Date(r.t).toLocaleString('ja-JP')+'</td><td><code>'+r.id+'</code></td><td>'+(h?'<button class="show" data-u="'+r.id+'" data-h="0">戻す</button>':'<button class="hide" data-u="'+r.id+'" data-h="1">隠す</button>')+'</td></tr>'}).join('')+'</table>';
  }catch(e){L.textContent='読みこめませんでした'}
 }
 document.addEventListener('click',async e=>{
