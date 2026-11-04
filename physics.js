@@ -36,5 +36,5 @@ function check(r){
  return !!j&&j.q===r.q&&j.k===r.k;
 }
 const api={P,vel,yAt,passTime,exitTime,landTime,quant,air,fall,check};
-if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.DPC=api;
+if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.DPC=api;
 })(this);

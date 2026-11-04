@@ -1,0 +1,30 @@
+# ランキングのルールの試験（本番のデータには触らない。試し用のデータベースで試す）
+name: ルールの試験
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'test/**'
+      - 'physics.js'
+      - '.github/workflows/rules-test.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: いまのルールを取ってくる
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/nasubi-no-oniwa/furoya-no-onna/main/database.rules.json -o "$RUNNER_TEMP/database.rules.json"
+          printf '{"database":{"rules":"%s"},"emulators":{"database":{"port":9000}}}' "$RUNNER_TEMP/database.rules.json" > "$RUNNER_TEMP/firebase.json"
+          cp test/rules-test.mjs physics.js "$RUNNER_TEMP/" && mkdir -p "$RUNNER_TEMP/test" && mv "$RUNNER_TEMP/rules-test.mjs" "$RUNNER_TEMP/test/"
+      - name: 試す
+        working-directory: ${{ runner.temp }}
+        run: npx -y firebase-tools@latest emulators:exec --only database --project furoya-no-onna "node test/rules-test.mjs"
